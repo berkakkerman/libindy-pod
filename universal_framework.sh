@@ -9,7 +9,7 @@
 
 WORKSPACE_PATH="Indy.xcworkspace"
 SCHEME_NAME="Indy"
-BUILD_DIR="/Users/$USER/Library/Developer/Xcode/DerivedData/Build/Products"
+BUILD_DIR="/Users/$USER/Library/Developer/Xcode/DerivedData/Universal-Indy/Build/Products"
 
 # Validate that everything is setup correctly
 validate() {
