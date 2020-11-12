@@ -7,10 +7,12 @@
 #
 #################################################################################################################################################
 
+WORKSPACE_PATH="Indy.xcworkspace"
+SCHEME_NAME="Indy"
+BUILD_DIR="/Users/$USER/Library/Developer/Xcode/DerivedData/Build/Products"
 
 # Validate that everything is setup correctly
 validate() {
-
 # 1. Make sure the archival is coming from a workspace (not a project).
 # This is because a project doesn't provide enough enviornment variables to
 # correctly archive the project in the way we need to (yes, lazy programmer).
@@ -21,6 +23,7 @@ echo "[ERROR]: PROJECT_NAME was not defined, did you select the 'Provide build s
 envExit 1;
 
 else
+echo "lanet else";
 exec > ${TMPDIR}/${IBSC_MODULE}_archive.log 2>&1;
 fi
 
@@ -62,7 +65,6 @@ exit $@;
 # no comments in this function.  That's because the echo statements serve as
 # those comments and provide breadcrumbs in the case that we can't build
 buildFramework() {
-
 if [ "true" == ${ALREADYINVOKED:-false} ]
 then
 echo "RECURSION: Detected, stopping"
@@ -70,7 +72,7 @@ else
 export ALREADYINVOKED="true"
 
 echo "Step 1. Building for iPhoneSimulator"
-xcodebuild -workspace "${WORKSPACE_PATH}" -scheme "${SCHEME_NAME}" -configuration ${CONFIGURATION} -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 6' ONLY_ACTIVE_ARCH=NO ARCHS='i386 x86_64' BUILD_DIR="${BUILD_DIR}" BUILD_ROOT="${BUILD_ROOT}" ENABLE_BITCODE=YES OTHER_CFLAGS="-fembed-bitcode" BITCODE_GENERATION_MODE=bitcode clean build
+xcodebuild -workspace "${WORKSPACE_PATH}" -scheme "${SCHEME_NAME}" -configuration ${CONFIGURATION} -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 12' ONLY_ACTIVE_ARCH=NO ARCHS='x86_64' BUILD_DIR="${BUILD_DIR}" BUILD_ROOT="${BUILD_ROOT}" ENABLE_BITCODE=YES OTHER_CFLAGS="-fembed-bitcode" BITCODE_GENERATION_MODE=bitcode clean build
 if [ "$?" != "0" ]
 then
 echo "[ERROR]: FAILED Step 1: Building for iPhoneSimulator";
@@ -133,7 +135,6 @@ fi
 }
 
 archiveFramework() {
-
 echo "Step 7. Create a zip archive of the framework"
 if [ ! -e "${PROJECT_FOLDER}/${IBSC_MODULE}.framework" ]
 then
@@ -146,14 +147,12 @@ cd "${PROJECT_FOLDER}"
 zip -r "${IBSC_MODULE}-${TARGET_NAME}.framework.zip" "${IBSC_MODULE}.framework"
 }
 
-# main function - delegates to the helpers
-main() {
-validate;
+
+
+
+#validate;
 configure;
 buildFramework;
 archiveFramework;
 
 open "${PROJECT_FOLDER}";
-}
-
-main;
